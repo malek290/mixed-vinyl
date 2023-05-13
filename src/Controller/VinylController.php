@@ -2,31 +2,49 @@
 
 namespace App\Controller;
 
-use App\Entity\VinylMix;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\VinylMixRepository;
+use App\Service\MixRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function Symfony\Component\String\u;
 
-class MixController extends AbstractController
+class VinylController extends AbstractController
 {
-    #[Route('/mix/new')]
-    public function new(EntityManagerInterface $entityManager): Response
+    public function __construct(
+        private bool $isDebug,
+        private MixRepository $mixRepository
+    )
+    {}
+
+    #[Route('/', name: 'app_homepage')]
+    public function homepage(): Response
     {
-        $mix = new VinylMix();
-        $mix->setTitle('Do you Remember... Phil Collins?!');
-        $mix->setDescription('A pure mix of drummers turned singers!');
-        $mix->setGenre('pop');
-        $mix->setTrackCount(rand(5, 20));
-        $mix->setVotes(rand(-50, 50));
+        $tracks = [
+            ['song' => 'Gangsta\'s Paradise', 'artist' => 'Coolio'],
+            ['song' => 'Waterfalls', 'artist' => 'TLC'],
+            ['song' => 'Creep', 'artist' => 'Radiohead'],
+            ['song' => 'Kiss from a Rose', 'artist' => 'Seal'],
+            ['song' => 'On Bended Knee', 'artist' => 'Boyz II Men'],
+            ['song' => 'Fantasy', 'artist' => 'Mariah Carey'],
+        ];
 
-        $entityManager->persist($mix);
-        $entityManager->flush();
+        return $this->render('vinyl/homepage.html.twig', [
+            'title' => 'PB & Jams',
+            'tracks' => $tracks,
+        ]);
+    }
 
-        return new Response(sprintf(
-            'Mix %d is %d tracks of pure 80\'s heaven',
-            $mix->getId(),
-            $mix->getTrackCount()
-        ));
+    #[Route('/browse/{slug}', name: 'app_browse')]
+    public function browse(VinylMixRepository $mixRepository, string $slug = null): Response
+    {
+        $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
+
+        $mixes = $mixRepository->findAll();
+
+        return $this->render('vinyl/browse.html.twig', [
+            'genre' => $genre,
+            'mixes' => $mixes,
+        ]);
     }
 }
