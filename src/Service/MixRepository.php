@@ -6,8 +6,8 @@ use Psr\Cache\CacheItemInterface;
 use Symfony\Bridge\Twig\Command\DebugCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Loader\FilesystemLoader;
 
@@ -29,6 +29,7 @@ class MixRepository
         $this->twigDebugCommand->run(new ArrayInput([]), $output);
         dd($output);
         */
+        
 
         return $this->cache->get('mixes_data', function(CacheItemInterface $cacheItem) {
             $cacheItem->expiresAfter($this->isDebug ? 5 : 60);
