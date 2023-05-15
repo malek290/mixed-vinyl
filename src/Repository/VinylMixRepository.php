@@ -4,10 +4,11 @@ namespace App\Repository;
 
 use App\Entity\VinylMix;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<\Proxies\__CG__\App\Entity\VinylMix>
+ * @extends ServiceEntityRepository<VinylMix>
  *
  * @method VinylMix|null find($id, $lockMode = null, $lockVersion = null)
  * @method VinylMix|null findOneBy(array $criteria, array $orderBy = null)
@@ -21,7 +22,7 @@ class VinylMixRepository extends ServiceEntityRepository
         parent::__construct($registry, VinylMix::class);
     }
 
-    public function add(\Proxies\__CG__\App\Entity\VinylMix $entity, bool $flush = false): void
+    public function add(VinylMix $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +31,7 @@ class VinylMixRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(\Proxies\__CG__\App\Entity\VinylMix $entity, bool $flush = false): void
+    public function remove(VinylMix $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,15 +41,28 @@ class VinylMixRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return \Proxies\__CG__\App\Entity\VinylMix[] Returns an array of VinylMix objects
+     * @return VinylMix[] Returns an array of VinylMix objects
      */
-    public function findAllOrderedByVotes(): array
+    public function findAllOrderedByVotes(string $genre = null): array
     {
-        return $this->createQueryBuilder('mix')
-            ->orderBy('mix.votes', 'DESC')
+        $queryBuilder = $this->addOrderByVotesQueryBuilder();
+
+        if ($genre) {
+            $queryBuilder->andWhere('mix.genre = :genre')
+                ->setParameter('genre', $genre);
+        }
+
+        return $queryBuilder
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    private function addOrderByVotesQueryBuilder(QueryBuilder $queryBuilder = null): QueryBuilder
+    {
+        $queryBuilder = $queryBuilder ?? $this->createQueryBuilder('mix');
+
+        return $queryBuilder->orderBy('mix.votes', 'DESC');
     }
 
 //    public function findOneBySomeField($value): ?VinylMix
