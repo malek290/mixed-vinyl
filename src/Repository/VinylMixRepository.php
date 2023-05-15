@@ -7,7 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<VinylMix>
+ * @extends ServiceEntityRepository<\Proxies\__CG__\App\Entity\VinylMix>
  *
  * @method VinylMix|null find($id, $lockMode = null, $lockVersion = null)
  * @method VinylMix|null findOneBy(array $criteria, array $orderBy = null)
@@ -21,7 +21,7 @@ class VinylMixRepository extends ServiceEntityRepository
         parent::__construct($registry, VinylMix::class);
     }
 
-    public function add(VinylMix $entity, bool $flush = false): void
+    public function add(\Proxies\__CG__\App\Entity\VinylMix $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class VinylMixRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(VinylMix $entity, bool $flush = false): void
+    public function remove(\Proxies\__CG__\App\Entity\VinylMix $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class VinylMixRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return VinylMix[] Returns an array of VinylMix objects
+     * @return \Proxies\__CG__\App\Entity\VinylMix[] Returns an array of VinylMix objects
      */
     public function findAllOrderedByVotes(): array
     {
