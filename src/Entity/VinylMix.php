@@ -11,7 +11,6 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class VinylMix
 {
     use TimestampableEntity;
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
@@ -29,8 +28,16 @@ class VinylMix
     #[ORM\Column(length: 255)]
     private ?string $genre = null;
 
+
+   
+
     #[ORM\Column]
     private int $votes = 0;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -84,6 +91,8 @@ class VinylMix
 
         return $this;
     }
+
+  
 
     public function getVotes(): ?int
     {
